@@ -1,6 +1,7 @@
 import express from "express";
 import userRoutes from "./routes/userRoutes";
 import tweetRoutes from "./routes/tweetRoutes";
+import { PrismaClient } from "@prisma/client/extension";
 
 const app = express();
 app.use(express.json());
