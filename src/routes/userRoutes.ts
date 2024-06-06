@@ -12,7 +12,10 @@ router.get("/", async (req, res) => {
 });
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const user = await prisma.user.findUnique({ where: { id: Number(id) } });
+  const user = await prisma.user.findUnique({
+    where: { id: Number(id) },
+    include: { tweets: true },
+  });
   res.json(user); // res.status(501).json({ error: `Not implemented : ${id}` });
 });
 
