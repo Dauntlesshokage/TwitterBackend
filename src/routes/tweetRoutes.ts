@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 const prisma = new PrismaClient();
+const JWT_SECRET = "SECRET";
 
 router.get("/", async (req, res) => {
   const result = await prisma.tweet.findMany({
@@ -32,19 +34,19 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { content, image, userId } = req.body;
-  try {
-    const result = await prisma.tweet.create({
-      data: {
-        content,
-        image,
-        userId,
-      },
-    });
-    res.json(result);
-  } catch (e) {
-    res.status(400).json({ error: "Tweet could not be made" });
-  }
+  res.sendStatus(200);
+  // try {
+  //   const result = await prisma.tweet.create({
+  //     data: {
+  //       content,
+  //       image,
+  //       userId,
+  //     },
+  //   });
+  //   res.json(result);
+  // } catch (e) {
+  //   res.status(400).json({ error: "Tweet could not be made" });
+  // }
 });
 
 router.put("/:id", async (req, res) => {
