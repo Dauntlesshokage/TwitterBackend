@@ -16,8 +16,8 @@ model User{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   email String @unique
-  name String
-  username String @unique
+  name String ?
+  username String ? @unique
   image String?
   bio String?
   isVerified Boolean @default(false)
@@ -31,7 +31,7 @@ model Token{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   type String
-  emailToken String @unique
+  emailToken String ? @unique
   valid Boolean @default(true)
   expiration DateTime
   userId Int

@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const router = Router();
 const EMAIL_TOKEN_EXPIRATION_MINUTES = 10;
-
+const AUTHENTICATION_EXPIRATION_HOURS = 12;
 function generateEmailToken(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -23,7 +23,7 @@ router.post("/login", async (req, res) => {
         user: {
           connectOrCreate: {
             where: { email },
-            create: { email, name, username },
+            create: { email },
           },
         },
       },
@@ -34,5 +34,48 @@ router.post("/login", async (req, res) => {
     console.log(e);
     res.status(400).json({ error: "couldnt start authentication" });
   }
+});
+
+router.post("/authenticate", async (req, res) => {
+  const { email, emailToken, valid } = req.body;
+  let dbEmailToken = await prisma.token.findUnique({
+    where: { emailToken },
+    include: { user: true },
+  });
+  if (dbEmailToken && dbEmailToken.expiration < new Date()) {
+    dbEmailToken = await prisma.token.update({
+      where: { id: dbEmailToken.id },
+      data: {
+        valid: false,
+      },
+      include: { user: true },
+    });
+  }
+  console.log(dbEmailToken);
+  if (!dbEmailToken || dbEmailToken.valid === false) {
+    return res.sendStatus(401);
+  }
+  if (dbEmailToken?.user?.email != email) {
+    return res.sendStatus(401);
+  }
+  const expiration = new Date(
+    new Date().getTime() + AUTHENTICATION_EXPIRATION_HOURS * 60 * 60 * 1000
+  );
+  const apiToken = await prisma.token.create({
+    data: {
+      type: "API",
+      expiration,
+      user: {
+        connect: {
+          email,
+        },
+      },
+    },
+  });
+  await prisma.token.update({
+    where: { id: dbEmailToken.id },
+    data: { valid: false },
+  });
+  res.sendStatus(200);
 });
 export default router;
