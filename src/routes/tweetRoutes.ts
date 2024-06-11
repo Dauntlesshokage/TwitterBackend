@@ -34,19 +34,22 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  res.sendStatus(200);
-  // try {
-  //   const result = await prisma.tweet.create({
-  //     data: {
-  //       content,
-  //       image,
-  //       userId,
-  //     },
-  //   });
-  //   res.json(result);
-  // } catch (e) {
-  //   res.status(400).json({ error: "Tweet could not be made" });
-  // }
+  const { content, image } = req.body;
+  //@ts-ignore
+  const user = req.user;
+  console.log(user);
+  try {
+    const result = await prisma.tweet.create({
+      data: {
+        content,
+        image,
+        userId: user.id,
+      },
+    });
+    res.json(result);
+  } catch (e) {
+    res.status(400).json({ error: "Tweet could not be made" });
+  }
 });
 
 router.put("/:id", async (req, res) => {
