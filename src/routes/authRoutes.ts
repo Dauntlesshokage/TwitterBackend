@@ -7,7 +7,7 @@ const router = Router();
 
 const EMAIL_TOKEN_EXPIRATION_MINUTES = 10;
 const AUTHENTICATION_EXPIRATION_HOURS = 12;
-const JWT_SECRET = "SECRET";
+const JWT_SECRET = process.env.JWT_SECRET || "SUPER SECRET";
 
 function generateEmailToken(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
