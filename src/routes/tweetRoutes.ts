@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const router = Router();
 const prisma = new PrismaClient();
-const JWT_SECRET = "SECRET";
 
 router.get("/", async (req, res) => {
   const result = await prisma.tweet.findMany({
