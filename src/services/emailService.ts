@@ -1,6 +1,5 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { error } from "console";
-require("dotenv").config();
 const ses = new SESClient({ region: "us-east-2" });
 function createSendEmailCommand(
   toAddress: string,
